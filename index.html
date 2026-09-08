@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roast Master | គ្រាប់កាហ្វេគុណភាពខ្ពស់</title>
+    <style>
+        /* --- Font Import: Google Sans Khmer (Noto Sans Khmer) --- */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer:wght@400;600;700;800&display=swap');
+
+        /* --- Basic Setup & Variables --- */
+        :root {
+            --primary-accent: #c48b48; 
+            --secondary-accent: #8b5a2b; 
+            --text-light: #ffffff;
+            --transition-speed: 0.4s;
+            
+            /* Vinyl Player Variables */
+            --warm-white: #fdfaf6;
+            --gold: #C59341;
+            --gold-light: #E2C07D;
+            --dark: #2a221a;
+            --shadow-soft: 0 15px 40px rgba(42, 34, 26, 0.06);
+        }
+        
+        body, html {
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Google Sans', 'Noto Sans Khmer', sans-serif;
+            background-color: #000; 
+            font-size: clamp(14px, 1vw, 20px);
+        }
+
+        /* --- Logo Styles --- */
+        .site-logo {
+            position: fixed; 
+            top: clamp(25px, 4vw, 40px);
+            left: clamp(30px, 5vw, 80px);
+            z-index: 10000; 
+            pointer-events: auto;
+        }
+        
+        .site-logo img {
+            height: clamp(60px, 8vh, 100px);
+            width: auto;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
+            transition: transform 0.3s ease;
+        }
+
+        .site-logo:hover img {
+            transform: scale(1.05);
+        }
+
+        /* --- EFFECT STYLES (Adapted for Coffee Theme) --- */
+        .sakura-container, .firefly-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .sakura-container { z-index: 2; }
+        .firefly-container { z-index: 3; }
+
+        .sakura-petal {
+            position: absolute;
+            top: -50px;
+            width: 20px;
+            height: 20px;
+            background-image: url('https://i.imgur.com/lmMaFvP.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            filter: sepia(1) hue-rotate(-40deg) saturate(5) brightness(0.7);
+            animation: fall linear infinite;
+        }
+
+        .sakura-petal:nth-child(1) { left: 5%; animation-duration: 20s; animation-delay: -5s; }
+        .sakura-petal:nth-child(2) { left: 15%; animation-duration: 15s; animation-delay: -2s; width: 16px; height: 16px; }
+        .sakura-petal:nth-child(3) { left: 30%; animation-duration: 22s; animation-delay: -8s; }
+        .sakura-petal:nth-child(4) { left: 45%; animation-duration: 18s; animation-delay: -4s; width: 25px; height: 25px; }
+        .sakura-petal:nth-child(5) { left: 60%; animation-duration: 25s; animation-delay: -10s; }
+        .sakura-petal:nth-child(6) { left: 75%; animation-duration: 16s; animation-delay: -1s; }
+        .sakura-petal:nth-child(7) { left: 85%; animation-duration: 23s; animation-delay: -6s; width: 18px; height: 18px; }
+        .sakura-petal:nth-child(8) { left: 95%; animation-duration: 19s; animation-delay: -3s; }
+
+        .firefly {
+            position: absolute;
+            background-color: #ff9d00; 
+            border-radius: 50%;
+            box-shadow: 0 0 5px #ff9d00, 0 0 15px #ff6a00, 0 0 30px #ff6a00;
+            opacity: 0;
+            animation: fireflyMove linear infinite, fireflyBlink 3s infinite alternate;
+        }
+
+        /* --- Main Carousel CSS --- */
+        .carousel-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999; 
+        }
+        .carousel-track {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            user-select: none;
+            overflow: hidden;
+            background-color: #1a120c; 
+        }
+        .carousel-item { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            opacity: 0; 
+            visibility: hidden; 
+            z-index: 10;
+        }
+        
+        .carousel-item img:first-child { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            opacity: 0.4; 
+        }
+        
+        .carousel-item img:last-child { 
+            position: absolute; 
+            width: clamp(280px, 35vw, 450px);
+            height: clamp(380px, 60vh, 600px);
+            object-fit: cover;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            top: 50%;
+            left: auto;
+            right: 8%;
+            transform: translateY(-50%);
+            opacity: 0;
+        }
+
+        .carousel-item.active { 
+            opacity: 1; 
+            visibility: visible; 
+        }
+        .carousel-item.active img:first-child { 
+            z-index: 11; 
+            animation: zoomInFromBottom 0.8s ease-out forwards;
+        }
+        .carousel-item.active img:last-child { 
+            z-index: 12; 
+            animation: appearFromRight 0.8s ease-out 0.3s forwards, subtleLift 0.6s ease-in-out 1.1s forwards;
+        }
+        .carousel-item.exiting { 
+            z-index: 9; 
+            animation: fadeOut 1s forwards; 
+        }
+        .carousel-item.exiting img { 
+            animation: none; 
+        }
+
+        /* --- Main Carousel Overlays & Text --- */
+        .book-info-overlay { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            bottom: 0;
+            width: 55%;
+            padding: clamp(30px, 5vw, 80px); 
+            z-index: 15; 
+            opacity: 0; 
+            pointer-events: none; 
+            transition: opacity 0.5s ease; 
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center; 
+        }
+        .book-info-overlay.reveal { 
+            opacity: 1; 
+            pointer-events: auto; 
+            animation: textParticleEffect 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s forwards; 
+        }
+        .book-title { 
+            font-family: 'Google Sans', 'Noto Sans Khmer', sans-serif;
+            font-size: clamp(2.5em, 5vw, 4.5em);
+            font-weight: 800;
+            color: var(--primary-accent); 
+            margin: 0 0 10px 0; 
+            line-height: 1.2;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.9); 
+        }
+        .book-author { 
+            font-size: clamp(1.2em, 2vw, 1.8em); 
+            color: #f4e8d3; 
+            margin: 0; 
+            font-weight: 700;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.9); 
+        }
+        .book-description { 
+            font-size: clamp(1em, 1.2vw, 1.2em); 
+            color: #dcd4cc; 
+            margin-top: 1.5em; 
+            line-height: 1.6; 
+            max-width: 90%;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.9); 
+        }
+        
+        .carousel-button-overlay { 
+            position: absolute; 
+            bottom: clamp(25px, 4vw, 60px); 
+            left: clamp(30px, 5vw, 80px); 
+            background-color: var(--primary-accent); 
+            color: var(--text-light, #fff); 
+            padding: 0.8em 2em; 
+            border-radius: 50px; 
+            font-weight: 700; 
+            font-size: 1.1em; 
+            transition: all 0.4s ease; 
+            z-index: 15; 
+            box-shadow: 0 4px 15px rgba(196, 139, 72, 0.4); 
+            opacity: 0; 
+            pointer-events: none; 
+            border: none;
+            cursor: pointer;
+            font-family: 'Google Sans', 'Noto Sans Khmer', sans-serif;
+        }
+        .carousel-button-overlay.reveal { 
+            opacity: 1; 
+            pointer-events: auto; 
+            animation: buttonAppearEffect 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.7s forwards; 
+        }
+        .carousel-button-overlay:hover { 
+            background-color: var(--secondary-accent);
+            transform: scale(1.05) translateY(-2px); 
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5); 
+        }
+
+        /* --- Shared Carousel Navigation CSS --- */
+        .carousel-nav { 
+            position: absolute; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            background-color: rgba(0, 0, 0, 0.4); 
+            color: white; border: none; 
+            cursor: pointer; 
+            z-index: 20; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            opacity: 0.7; 
+            transition: all 0.4s ease; 
+            width: clamp(48px, 4vw, 70px);
+            height: clamp(48px, 4vw, 70px);
+            font-size: clamp(24px, 2vw, 35px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .carousel-nav:hover { 
+            opacity: 1; 
+            background-color: var(--primary-accent); 
+            transform: translateY(-50%) scale(1.1); 
+        }
+        .carousel-nav.prev { left: clamp(15px, 2vw, 30px); }
+        .carousel-nav.next { right: clamp(15px, 2vw, 30px); }
+        
+        .carousel-pagination { 
+            position: absolute; 
+            bottom: 4vh; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            display: flex; 
+            gap: clamp(10px, 1.2vw, 18px); 
+            z-index: 20; 
+        }
+        .pagination-dot { 
+            width: clamp(10px, 1vw, 15px);
+            height: clamp(10px, 1vw, 15px);
+            background-color: rgba(255, 255, 255, 0.3); 
+            border-radius: 50%; 
+            cursor: pointer; 
+            transition: all 0.4s ease; 
+            border: 1px solid rgba(0,0,0,0.5); 
+        }
+        .pagination-dot.active { 
+            background-color: var(--primary-accent); 
+            transform: scale(1.3); 
+            box-shadow: 0 0 10px var(--primary-accent);
+        }
+        
+        /* ---- VINYL PLAYER STYLES ---- */
+        .vinyl-wrapper { 
+            position: fixed; 
+            bottom: clamp(1.5rem, 4vw, 2.5rem); 
+            right: clamp(1.5rem, 4vw, 2.5rem); 
+            z-index: 10000; 
+            display: flex; 
+            align-items: center; 
+            gap: 1rem; 
+        }
+        
+        .vinyl-disc {
+            width: clamp(50px, 6vw, 65px); 
+            height: clamp(50px, 6vw, 65px); 
+            background: url('https://i.imgur.com/zaAovEv.png') center/cover no-repeat;
+            border-radius: 50%;
+            border: 3px solid var(--warm-white); 
+            box-shadow: 0 8px 25px rgba(197,147,65,0.4);
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            position: relative; 
+            animation: spin 4s linear infinite; 
+            animation-play-state: paused; 
+            transition: transform 0.3s ease;
+        }
+        
+        .vinyl-disc:hover { 
+            transform: scale(1.05); 
+        }
+        
+        .vinyl-disc.playing { 
+            animation-play-state: running; 
+        }
+        
+        .vinyl-disc::before { 
+            content: ''; 
+            position: absolute; 
+            inset: 4px; 
+            border: 1px solid rgba(255,255,255,0.3); 
+            border-radius: 50%; 
+        }
+        
+        .vinyl-disc::after { 
+            content: ''; 
+            width: 14px; 
+            height: 14px; 
+            background: var(--warm-white); 
+            border-radius: 50%; 
+            border: 2px solid var(--gold); 
+            z-index: 2; 
+            position: relative; 
+        }
+        
+        .vinyl-tooltip {
+            font-family: 'Google Sans', sans-serif; 
+            font-size: 0.75rem; 
+            font-weight: 600;
+            color: var(--dark); 
+            background: var(--warm-white);
+            padding: 0.4rem 1rem; 
+            border-radius: 20px; 
+            box-shadow: var(--shadow-soft); 
+            border: 1px solid var(--gold-light);
+            opacity: 0; 
+            transform: translateX(10px); 
+            transition: all 0.3s ease; 
+            pointer-events: none;
+        }
+        
+        .vinyl-wrapper:hover .vinyl-tooltip { 
+            opacity: 1; 
+            transform: translateX(0); 
+        }
+
+        /* --- Required Animations --- */
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+        }
+        @keyframes fireflyMove {
+            0% { transform: translate(0, 0); opacity: 0; }
+            20% { opacity: 1; }
+            40% { transform: translate(var(--x1), var(--y1)); }
+            60% { transform: translate(var(--x2), var(--y2)); opacity: 1; }
+            80% { transform: translate(var(--x3), var(--y3)); }
+            100% { transform: translate(var(--x4), var(--y4)); opacity: 0; }
+        }
+        @keyframes fireflyBlink {
+            0% { box-shadow: 0 0 5px #ff9d00, 0 0 15px #ff6a00, 0 0 30px #ff6a00; }
+            50% { box-shadow: 0 0 2px #ff9d00, 0 0 8px #ff6a00, 0 0 15px #ff6a00; }
+            100% { box-shadow: 0 0 5px #ff9d00, 0 0 15px #ff6a00, 0 0 30px #ff6a00; }
+        }
+        
+        @keyframes appearFromRight { 
+            from { opacity: 0; transform: translate(5vw, -50%); } 
+            to { opacity: 1; transform: translate(0, -50%); } 
+        }
+        @keyframes subtleLift { 
+            from { transform: translate(0, -50%) scale(1); box-shadow: 0 25px 50px rgba(0,0,0,0.8); } 
+            to { transform: translate(0, -50%) scale(1.02); box-shadow: 0 35px 65px rgba(0,0,0,0.9); } 
+        }
+        
+        @keyframes zoomInFromBottom { 
+            from { opacity: 0; transform: translateY(5vh) scale(1.05); } 
+            to { opacity: 0.4; transform: translateY(0) scale(1); } 
+        }
+        
+        @keyframes textParticleEffect { 
+            from { transform: translateX(-30px) scale(0.9); opacity: 0; filter: blur(5px); } 
+            to { transform: translateX(0) scale(1); opacity: 1; filter: blur(0); } 
+        }
+        @keyframes buttonAppearEffect { 
+            0% { transform: translateY(30px) scale(0.9); opacity: 0; } 
+            70% { transform: translateY(0) scale(1.1); opacity: 1; } 
+            100% { transform: translateY(0) scale(1); opacity: 1; } 
+        }
+        @keyframes fadeOut { 
+            to { opacity: 0; } 
+        }
+        @keyframes spin { 
+            100% { transform: rotate(360deg); } 
+        }
+        
+        @media (max-width: 768px) {
+            .site-logo {
+                left: 50%;
+                transform: translateX(-50%);
+                top: 25px;
+            }
+            .site-logo img {
+                height: 60px;
+            }
+            .site-logo:hover img {
+                transform: scale(1.05);
+            }
+            .book-info-overlay { width: 100%; padding: 20px; text-align: center; align-items: center; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%); top: auto; bottom: 0; height: 60%; justify-content: flex-end; padding-bottom: 100px; }
+            .carousel-item img:last-child { right: 50%; transform: translate(50%, -60%); width: 80%; max-height: 45vh; }
+            .carousel-button-overlay { left: 50%; transform: translateX(-50%); bottom: 20px; }
+            .vinyl-wrapper { bottom: 15px; right: 15px; } /* Slightly tighter spacing on mobile */
+            .vinyl-tooltip { display: none; } /* Hide tooltip on mobile to save space */
+            
+            @keyframes appearFromRight { from { opacity: 0; transform: translate(50%, -50%); } to { opacity: 1; transform: translate(50%, -60%); } }
+            @keyframes subtleLift { from { transform: translate(50%, -60%) scale(1); } to { transform: translate(50%, -60%) scale(1.02); } }
+            @keyframes buttonAppearEffect { 
+                0% { transform: translate(-50%, 30px) scale(0.9); opacity: 0; } 
+                70% { transform: translate(-50%, 0) scale(1.1); opacity: 1; } 
+                100% { transform: translate(-50%, 0) scale(1); opacity: 1; } 
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Logo Section -->
+    <a href="#" class="site-logo" aria-label="Roast Master Home">
+        <img src="https://i.imgur.com/HeTXtds.png" alt="Roast Master Logo">
+    </a>
+
+    <!-- Audio & Vinyl Player Elements -->
+    <audio id="bg-music" loop>
+        <source src="https://vandymeas.github.io/audio-files/bensound-cozycoffeehouse.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="vinyl-wrapper">
+        <div class="vinyl-tooltip">Music</div>
+        <div class="vinyl-disc" id="music-toggle" title="Play/Pause Music"></div>
+    </div>
+
+    <!-- Main Carousel -->
+    <section class="carousel-container" aria-labelledby="carousel-heading">
+        <div class="carousel-track" id="mainCarouselTrack">
+            <div class="sakura-container">
+                <div class="sakura-petal"></div>
+                <div class="sakura-petal"></div>
+                <div class="sakura-petal"></div>
+                <div class="sakura-petal"></div>
+                <div class="sakura-petal"></div>
+                <div class="sakura-petal"></div>
+                <div class="sakura-petal"></div>
+                <div class="sakura-petal"></div>
+            </div>
+            <div class="firefly-container" id="fireflyContainer"></div>
+        </div>
+        <nav>
+            <button class="carousel-nav prev" id="mainCarouselPrev" aria-label="Previous Slide">&#10094;</button>
+            <button class="carousel-nav next" id="mainCarouselNext" aria-label="Next Slide">&#10095;</button>
+            <div class="carousel-pagination" id="mainCarouselPagination"></div>
+        </nav>
+        
+        <div class="book-info-overlay" id="infoOverlay">
+            <h2 class="book-title" id="bookTitle"></h2>
+            <p class="book-author" id="bookAuthor"></p>
+            <p class="book-description" id="bookDesc"></p>
+        </div>
+        <button class="carousel-button-overlay" id="buttonOverlay"></button>
+    </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const carouselData = [
+        { 
+            title: "គ្រាប់កាហ្វេ ពី Roast Master! ☕️", 
+            author: "ដៃគូអាជីវកម្មដ៏គួរឱ្យទុកចិត្តរបស់អ្នក! 🌟", 
+            desc: "✅ គុណភាពខ្ពស់ រសជាតិឈ្ងុយឆ្ងាញ់<br>✅ តម្លៃសមរម្យ ចំណេញច្រើន<br>✅ ស័ក្តសមបំផុតសម្រាប់អាជីវកម្មលោកអ្នក", 
+            btnText: "078 5555 72 / 010 6666 75", 
+            btnLink: "tel:078555572", 
+            imgBack: "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=1920&q=80", 
+            imgFront: "https://i.imgur.com/2Sg49vK.jpeg", 
+            alt: "Premium Coffee Beans" 
+        },
+        { 
+            title: "ក្លិនឈ្ងុយពិតៗ 🔥", 
+            author: "សម្រិតសម្រាំងពីចម្ការ រហូតដល់ការលីង", 
+            desc: "គ្រាប់កាហ្វេលីងថ្មីៗពី Roast Master! ធានាទាំងក្លិនឈ្ងុយ និងរសជាតិកាហ្វេពិតៗ។<br>គុណភាពស្តង់ដារ តម្លៃពិសេសចំណេញច្រើន ក្លិនឈ្ងុយ រសជាតិដិតល្អ។", 
+            btnText: "ស្វែងយល់បន្ថែម", 
+            btnLink: "https://t.me/RoastMasterkh", 
+            imgBack: "https://images.unsplash.com/photo-1611162458324-aae1eb4129a4?auto=format&fit=crop&w=1920&q=80", 
+            imgFront: "https://i.imgur.com/y5XffFS.jpeg", 
+            alt: "Coffee Roasting Process" 
+        },
+        { 
+            title: "រសជាតិប្រចាំហាងអ្នក ✨", 
+            author: "បង្កើតរសជាតិកាហ្វេប្រចាំហាងរបស់អ្នកឥឡូវនេះ!", 
+            desc: "✅ លីងតាមតម្រូវការ (Custom Roasting) <br>✅ គុណភាពខ្ពស់ (Premium Arabica & Robusta) <br>✅ រសជាតិពិសេសសម្រាប់ហាងអ្នក (Signature Blend)", 
+            btnText: "ទំនាក់ទំនងមកយើងឥលូវនេះ!", 
+            btnLink: "tel:010666675", 
+            imgBack: "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1920&q=80", 
+            imgFront: "https://i.imgur.com/D6dEeJF.jpeg", 
+            alt: "Signature Coffee Blend" 
+        }
+    ];
+
+    function populateMainCarousel(data) {
+        const track = document.getElementById('mainCarouselTrack');
+        if (!track) return;
+        
+        const sakuraContainer = track.querySelector('.sakura-container');
+        const fireflyContainer = track.querySelector('.firefly-container');
+
+        let itemHTML = data.map(item => `
+            <div class="carousel-item" 
+                data-title="${item.title}" 
+                data-author="${item.author}" 
+                data-desc="${item.desc}" 
+                data-btn-text="${item.btnText}" 
+                data-btn-link="${item.btnLink}">
+                <img src="${item.imgBack}" alt="Background Image">
+                <img src="${item.imgFront}" alt="${item.alt}">
+            </div>
+        `).join('');
+
+        track.innerHTML = '';
+        if (sakuraContainer) track.appendChild(sakuraContainer);
+        if (fireflyContainer) track.appendChild(fireflyContainer);
+        track.insertAdjacentHTML('beforeend', itemHTML);
+    }
+
+    function initializeCarousel({ trackId, prevBtnId, nextBtnId, paginationId, onSlideChange, animation, animationDuration }) {
+        const track = document.getElementById(trackId);
+        if (!track) return;
+
+        const items = Array.from(track.querySelectorAll('.carousel-item'));
+        if (items.length === 0) return;
+        
+        const totalItems = items.length;
+        let currentIndex = 0;
+        let isAnimating = false;
+        const exitDuration = animationDuration || 1000;
+
+        const prevBtn = document.getElementById(prevBtnId);
+        const nextBtn = document.getElementById(nextBtnId);
+        const pagination = document.getElementById(paginationId);
+        
+        const update = (newIndex) => {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            const oldIndex = currentIndex;
+            currentIndex = (newIndex + totalItems) % totalItems;
+
+            const oldItem = items[oldIndex];
+            const newItem = items[currentIndex];
+
+            if (animation) {
+                newItem.classList.add(animation.active);
+                if (oldItem !== newItem) oldItem.classList.add(animation.exiting);
+            } else {
+                items.forEach(item => item.classList.remove('active'));
+                newItem.classList.add('active');
+            }
+            
+            updatePagination();
+            if (onSlideChange) onSlideChange(currentIndex);
+            
+            setTimeout(() => {
+                if (animation) {
+                    oldItem.classList.remove(animation.exiting);
+                    if (oldItem !== newItem) oldItem.classList.remove(animation.active);
+                }
+                isAnimating = false;
+            }, exitDuration);
+        };
+
+        const updatePagination = () => {
+            if (!pagination) return;
+            Array.from(pagination.children).forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentIndex);
+            });
+        };
+        
+        if (pagination) {
+            pagination.innerHTML = '';
+            for (let i = 0; i < totalItems; i++) {
+                const dot = document.createElement('span');
+                dot.className = 'pagination-dot';
+                dot.addEventListener('click', () => { if (i !== currentIndex) update(i); });
+                pagination.appendChild(dot);
+            }
+        }
+
+        if (prevBtn) prevBtn.addEventListener('click', () => update(currentIndex - 1));
+        if (nextBtn) nextBtn.addEventListener('click', () => update(currentIndex + 1));
+
+        update(0);
+        return { update };
+    }
+
+    populateMainCarousel(carouselData);
+    initializeCarousel({
+        trackId: 'mainCarouselTrack',
+        prevBtnId: 'mainCarouselPrev',
+        nextBtnId: 'mainCarouselNext',
+        paginationId: 'mainCarouselPagination',
+        animation: { active: 'active', exiting: 'exiting' },
+        onSlideChange: (newIndex) => {
+            const infoOverlay = document.getElementById('infoOverlay');
+            const button = document.getElementById('buttonOverlay');
+            const bookTitle = document.getElementById('bookTitle');
+            const bookAuthor = document.getElementById('bookAuthor');
+            const bookDesc = document.getElementById('bookDesc');
+
+            infoOverlay.classList.remove('reveal');
+            button.classList.remove('reveal');
+
+            setTimeout(() => {
+                const itemData = document.querySelector(`#mainCarouselTrack .carousel-item:nth-child(${newIndex + 3})`).dataset;
+                bookTitle.innerHTML = itemData.title;
+                bookAuthor.innerHTML = itemData.author;
+                bookDesc.innerHTML = itemData.desc;
+                button.textContent = itemData.btnText;
+                button.onclick = () => {
+                    if(itemData.btnLink && itemData.btnLink !== '#') {
+                        window.open(itemData.btnLink, '_self');
+                    }
+                };
+                infoOverlay.classList.add('reveal');
+                button.classList.add('reveal');
+            }, 500);
+        }
+    });
+
+    let autoSlideInterval = setInterval(() => {
+        const nextBtn = document.getElementById('mainCarouselNext');
+        if (nextBtn) nextBtn.click();
+    }, 6000); 
+    
+    document.querySelector('.carousel-container').addEventListener('click', () => {
+        clearInterval(autoSlideInterval);
+        autoSlideInterval = setInterval(() => {
+            const nextBtn = document.getElementById('mainCarouselNext');
+            if (nextBtn) nextBtn.click();
+        }, 8000);
+    });
+
+    const fireflyContainer = document.getElementById('fireflyContainer');
+    const numberOfFireflies = 35; 
+
+    if (fireflyContainer) {
+        for (let i = 0; i < numberOfFireflies; i++) {
+            const firefly = document.createElement('div');
+            firefly.className = 'firefly';
+            
+            firefly.style.left = `${Math.random() * 100}vw`;
+            firefly.style.top = `${Math.random() * 100}vh`;
+
+            const size = Math.random() * 4 + 1; 
+            firefly.style.width = `${size}px`;
+            firefly.style.height = `${size}px`;
+
+            const duration = Math.random() * 15 + 10;
+            firefly.style.animationDuration = `${duration}s, ${Math.random() * 3 + 2}s`;
+
+            const delay = Math.random() * -duration;
+            firefly.style.animationDelay = `${delay}s`;
+
+            firefly.style.setProperty('--x1', `${(Math.random() - 0.5) * 150}px`);
+            firefly.style.setProperty('--y1', `-${Math.random() * 200 + 50}px`);
+            firefly.style.setProperty('--x2', `${(Math.random() - 0.5) * 200}px`);
+            firefly.style.setProperty('--y2', `-${Math.random() * 300 + 100}px`);
+            firefly.style.setProperty('--x3', `${(Math.random() - 0.5) * 250}px`);
+            firefly.style.setProperty('--y3', `-${Math.random() * 400 + 200}px`);
+            firefly.style.setProperty('--x4', `${(Math.random() - 0.5) * 300}px`);
+            firefly.style.setProperty('--y4', `-${Math.random() * 500 + 300}px`);
+
+            fireflyContainer.appendChild(firefly);
+        }
+    }
+    
+    // --- Music Toggle Logic ---
+    const bgMusic = document.getElementById('bg-music');
+    const musicToggle = document.getElementById('music-toggle');
+    let isPlaying = false;
+    
+    musicToggle.addEventListener('click', () => {
+        if (isPlaying) { 
+            bgMusic.pause(); 
+            musicToggle.classList.remove('playing'); 
+        } else { 
+            bgMusic.play(); 
+            musicToggle.classList.add('playing'); 
+        }
+        isPlaying = !isPlaying;
+    });
+
+});
+</script>
+
+</body>
+</html>
