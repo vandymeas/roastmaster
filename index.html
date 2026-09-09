@@ -23,6 +23,10 @@
             --shadow-soft: 0 15px 40px rgba(42, 34, 26, 0.06);
         }
         
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
         body, html {
             margin: 0 !important;
             padding: 0 !important;
@@ -34,20 +38,22 @@
         body {
             font-family: 'Google Sans', 'Noto Sans Khmer', sans-serif;
             background-color: #000; 
-            font-size: clamp(14px, 1vw, 20px);
+            /* Increased max font size for 4K screens */
+            font-size: clamp(14px, 1.2vw, 32px);
         }
 
         /* --- Logo Styles --- */
         .site-logo {
             position: fixed; 
-            top: clamp(25px, 4vw, 40px);
-            left: clamp(30px, 5vw, 80px);
+            top: clamp(25px, 4vw, 60px);
+            left: clamp(30px, 5vw, 100px);
             z-index: 10000; 
             pointer-events: auto;
         }
         
         .site-logo img {
-            height: clamp(60px, 8vh, 100px);
+            /* Increased max logo size for TVs */
+            height: clamp(60px, 8vh, 160px);
             width: auto;
             filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
             transition: transform 0.3s ease;
@@ -140,8 +146,9 @@
         
         .carousel-item img:last-child { 
             position: absolute; 
-            width: clamp(280px, 35vw, 450px);
-            height: clamp(380px, 60vh, 600px);
+            /* Scaled significantly for TVs */
+            width: clamp(280px, 35vw, 800px);
+            height: clamp(380px, 60vh, 1000px);
             object-fit: cover;
             border-radius: 16px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.8);
@@ -180,7 +187,7 @@
             left: 0; 
             bottom: 0;
             width: 55%;
-            padding: clamp(30px, 5vw, 80px); 
+            padding: clamp(30px, 5vw, 120px); 
             z-index: 15; 
             opacity: 0; 
             pointer-events: none; 
@@ -197,7 +204,8 @@
         }
         .book-title { 
             font-family: 'Google Sans', 'Noto Sans Khmer', sans-serif;
-            font-size: clamp(2.5em, 5vw, 4.5em);
+            /* Scaled title */
+            font-size: clamp(2.5em, 5vw, 6em);
             font-weight: 800;
             color: var(--primary-accent); 
             margin: 0 0 10px 0; 
@@ -205,14 +213,16 @@
             text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.9); 
         }
         .book-author { 
-            font-size: clamp(1.2em, 2vw, 1.8em); 
+            /* Scaled author */
+            font-size: clamp(1.2em, 2vw, 2.5em); 
             color: #f4e8d3; 
             margin: 0; 
             font-weight: 700;
             text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.9); 
         }
         .book-description { 
-            font-size: clamp(1em, 1.2vw, 1.2em); 
+            /* Scaled description */
+            font-size: clamp(1em, 1.2vw, 1.8em); 
             color: #dcd4cc; 
             margin-top: 1.5em; 
             line-height: 1.6; 
@@ -222,14 +232,14 @@
         
         .carousel-button-overlay { 
             position: absolute; 
-            bottom: clamp(25px, 4vw, 60px); 
-            left: clamp(30px, 5vw, 80px); 
+            bottom: clamp(25px, 4vw, 100px); 
+            left: clamp(30px, 5vw, 120px); 
             background-color: var(--primary-accent); 
             color: var(--text-light, #fff); 
             padding: 0.8em 2em; 
             border-radius: 50px; 
             font-weight: 700; 
-            font-size: 1.1em; 
+            font-size: clamp(1.1em, 1.5vw, 2em); 
             transition: all 0.4s ease; 
             z-index: 15; 
             box-shadow: 0 4px 15px rgba(196, 139, 72, 0.4); 
@@ -265,9 +275,10 @@
             justify-content: center; 
             opacity: 0.7; 
             transition: all 0.4s ease; 
-            width: clamp(48px, 4vw, 70px);
-            height: clamp(48px, 4vw, 70px);
-            font-size: clamp(24px, 2vw, 35px);
+            /* Scaled navigation arrows */
+            width: clamp(48px, 4vw, 100px);
+            height: clamp(48px, 4vw, 100px);
+            font-size: clamp(24px, 2vw, 50px);
             border: 1px solid rgba(255,255,255,0.1);
         }
         .carousel-nav:hover { 
@@ -275,21 +286,22 @@
             background-color: var(--primary-accent); 
             transform: translateY(-50%) scale(1.1); 
         }
-        .carousel-nav.prev { left: clamp(15px, 2vw, 30px); }
-        .carousel-nav.next { right: clamp(15px, 2vw, 30px); }
+        .carousel-nav.prev { left: clamp(15px, 2vw, 40px); }
+        .carousel-nav.next { right: clamp(15px, 2vw, 40px); }
         
         .carousel-pagination { 
             position: absolute; 
-            bottom: 4vh; 
+            bottom: clamp(15px, 4vh, 60px); 
             left: 50%; 
             transform: translateX(-50%); 
             display: flex; 
-            gap: clamp(10px, 1.2vw, 18px); 
+            gap: clamp(10px, 1.2vw, 24px); 
             z-index: 20; 
         }
         .pagination-dot { 
-            width: clamp(10px, 1vw, 15px);
-            height: clamp(10px, 1vw, 15px);
+            /* Scaled pagination dots */
+            width: clamp(10px, 1vw, 24px);
+            height: clamp(10px, 1vw, 24px);
             background-color: rgba(255, 255, 255, 0.3); 
             border-radius: 50%; 
             cursor: pointer; 
@@ -305,8 +317,8 @@
         /* ---- VINYL PLAYER STYLES ---- */
         .vinyl-wrapper { 
             position: fixed; 
-            bottom: clamp(1.5rem, 4vw, 2.5rem); 
-            right: clamp(1.5rem, 4vw, 2.5rem); 
+            bottom: clamp(1.5rem, 4vw, 4rem); 
+            right: clamp(1.5rem, 4vw, 4rem); 
             z-index: 10000; 
             display: flex; 
             align-items: center; 
@@ -314,8 +326,9 @@
         }
         
         .vinyl-disc {
-            width: clamp(50px, 6vw, 65px); 
-            height: clamp(50px, 6vw, 65px); 
+            /* Scaled vinyl player */
+            width: clamp(50px, 6vw, 100px); 
+            height: clamp(50px, 6vw, 100px); 
             background: url('https://i.imgur.com/zaAovEv.png') center/cover no-repeat;
             border-radius: 50%;
             border: 3px solid var(--warm-white); 
@@ -348,8 +361,8 @@
         
         .vinyl-disc::after { 
             content: ''; 
-            width: 14px; 
-            height: 14px; 
+            width: clamp(14px, 1.5vw, 24px); 
+            height: clamp(14px, 1.5vw, 24px); 
             background: var(--warm-white); 
             border-radius: 50%; 
             border: 2px solid var(--gold); 
@@ -359,11 +372,11 @@
         
         .vinyl-tooltip {
             font-family: 'Google Sans', sans-serif; 
-            font-size: 0.75rem; 
+            font-size: clamp(0.75rem, 1vw, 1.5rem); 
             font-weight: 600;
             color: var(--dark); 
             background: var(--warm-white);
-            padding: 0.4rem 1rem; 
+            padding: 0.4em 1em; 
             border-radius: 20px; 
             box-shadow: var(--shadow-soft); 
             border: 1px solid var(--gold-light);
@@ -442,8 +455,8 @@
             .book-info-overlay { width: 100%; padding: 20px; text-align: center; align-items: center; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%); top: auto; bottom: 0; height: 60%; justify-content: flex-end; padding-bottom: 100px; }
             .carousel-item img:last-child { right: 50%; transform: translate(50%, -60%); width: 80%; max-height: 45vh; }
             .carousel-button-overlay { left: 50%; transform: translateX(-50%); bottom: 20px; }
-            .vinyl-wrapper { bottom: 15px; right: 15px; } /* Slightly tighter spacing on mobile */
-            .vinyl-tooltip { display: none; } /* Hide tooltip on mobile to save space */
+            .vinyl-wrapper { bottom: 15px; right: 15px; } 
+            .vinyl-tooltip { display: none; } 
             
             @keyframes appearFromRight { from { opacity: 0; transform: translate(50%, -50%); } to { opacity: 1; transform: translate(50%, -60%); } }
             @keyframes subtleLift { from { transform: translate(50%, -60%) scale(1); } to { transform: translate(50%, -60%) scale(1.02); } }
